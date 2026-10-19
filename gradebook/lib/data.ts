@@ -11,12 +11,21 @@ export const courses:Course[]=[
 {id:'lit',name:'Lit/Writ',code:'1010',color:'#e5605f',cats:[{name:'Quizzes',w:30,kind:'quiz'},{name:'Essays',w:50,kind:'project'},{name:'Activities',w:20,kind:'homework'}]},
 {id:'pe',name:'PE 9',code:'2510',color:'#5fd068',cats:[{name:'Cardio',w:50,kind:'lab'},{name:'Participation',w:50,kind:'homework'}]}];
 let s=7;const rnd=()=>{s=(s*16807)%2147483647;return s/2147483647};
+// Mock names and point values per course/category (live mode uses the real ones from Schoology).
+const GEN:Record<string,Record<string,{n:(k:number)=>string;pts:number[]}>>={
+ alg:{Homework:{n:k=>`HW: Section 2.${k+1}`,pts:[10,10,15,20]},Quizzes:{n:k=>`Quiz ${k+1}: ${['Functions','Quadratics','Polynomials','Radicals'][k%4]}`,pts:[20,25,30]},Tests:{n:k=>`Ch ${k+1} Test`,pts:[50,100]}},
+ bio:{Homework:{n:k=>`EdPuzzle: ${['Enzymes','Cell Membrane','Mitosis','DNA Replication','Photosynthesis'][k%5]}`,pts:[5,10]},Labs:{n:k=>`Lab: ${['Osmosis','Enzyme Rates','Onion Mitosis','DNA Extraction','Leaf Pigments'][k%5]}`,pts:[20,25,30]},Tests:{n:k=>`Unit ${k+1} Test`,pts:[50,75,100]}},
+ cul:{'Cooking Labs':{n:k=>`Lab: ${['Knife Skills','Honey Garlic Meatballs','Pumpkin Muffins','Fruit Swap','Soup Stock'][k%5]}`,pts:[25,50]},Classwork:{n:k=>`Classwork: ${['Food Safety Comic','Kitchen Equipment','Recipe Conversion','Share and Compare'][k%4]}`,pts:[10,15,20]}},
+ jap:{Assignments:{n:k=>['Self-introduction speech','Hiragana quiz','Numbers worksheet','Greetings dialogue','Katakana practice'][k%5],pts:[10,20,25]}},
+ lit:{Quizzes:{n:k=>`Reading Quiz ${k+1}`,pts:[10,15,20]},Essays:{n:k=>['Personal narrative','Quote integration essay','Rhetorical analysis'][k%3],pts:[50,100]},Activities:{n:k=>['Quote Integration Practice','Peer review','Annotation check','Vocabulary set'][k%4],pts:[10,15]}},
+ pe:{Cardio:{n:k=>`Mile run ${k+1}`,pts:[10,15]},Participation:{n:k=>`Participation: week ${k+1}`,pts:[10]}}};
 export const assignments:Assignment[]=courses.flatMap(c=>Array.from({length:14},(_,i)=>{
- const cat=c.cats[i%c.cats.length];const due=-62+i*5+Math.floor(rnd()*3);const max=cat.kind==='test'?50:cat.kind==='quiz'?20:10;
+ const cat=c.cats[i%c.cats.length];const g=GEN[c.id][cat.name];const k=Math.floor(i/c.cats.length);
+ const due=-62+i*5+Math.floor(rnd()*3);const max=g.pts[Math.floor(rnd()*g.pts.length)];
  const past=due<0;const missing=past&&rnd()<(c.id==='lit'?.3:.07);
  const base=c.id==='lit'?.68:c.id==='bio'?.86:.93;
- return{id:`${c.id}${i}`,courseId:c.id,title:cat.kind==='test'?`Ch ${i+1} Test`:`${cat.name} ${i+1}`,category:cat.name,kind:cat.kind,
-  assigned:day(due-6),due:day(due),completed:past&&!missing?day(due-1):null,score:past&&!missing?Math.round(max*Math.min(1,base+(rnd()-.5)*.25)*10)/10:null,max}}));
+ return{id:`${c.id}${i}`,courseId:c.id,title:g.n(k),category:cat.name,kind:cat.kind,
+  assigned:day(due-6),due:day(due),completed:past&&!missing?day(due-1):null,score:past&&!missing?Math.min(max,Math.round(max*(base+(rnd()-.5)*.25)*2)/2):null,max}}));
 export const schools=['Fauquier High School','Liberty High School','Kettle Run High School','Brentsville District High School','Osbourn Park High School','Woodgrove High School','Heritage High School'];
 export const isOverdue=(a:Assignment)=>a.score===null&&!a.completed&&+new Date(a.due)<+NOW;
 // Ungraded assignments (missing, overdue or pending) don't count toward any grade.
