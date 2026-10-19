@@ -1,0 +1,5 @@
+[
+ {"name":"Demo High School","city":"Sampletown","state":"VA","demo":true},
+ {"name":"Demo Academy","city":"Exampleville","state":"VA","demo":true},
+ {"name":"Sample Preparatory School","city":"Testburg","state":"MD","demo":true}
+]

@@ -14,7 +14,7 @@ export default function Page(){
  return <div><h1 className="text-3xl font-bold mb-4">Assignments</h1>
   <div className="flex flex-wrap gap-3 mb-4"><input placeholder="Search assignments" value={q} onChange={e=>setQ(e.target.value)}/>
    <label className="flex items-center gap-2 text-sm text-neutral-400">Sort by<select value={sort} onChange={e=>setSort(e.target.value)}>{Object.entries(sorts).map(([k,[l]])=><option key={k} value={k}>{l}</option>)}</select></label></div>
-  <div className="space-y-2">{rows.map(a=>{const p=pctOf(a);return <div key={a.id} className="card flex items-center justify-between !py-3">
+  <div className="space-y-2 stagger">{rows.map(a=>{const p=pctOf(a);return <div key={a.id} className="card flex items-center justify-between !py-3">
    <div><div className="font-medium">{a.title}</div><div className="text-sm text-neutral-400">{cn(a)} / {a.category} · assigned {fmt(a.assigned)} · due {fmt(a.due)}{a.completed&&` · completed ${fmt(a.completed)}`}</div></div>
    <div className="text-right"><div style={{color:gColor(p)}} className="font-semibold">{p===null?(isOverdue(a)?'Missing':'Pending'):`${a.score}/${a.max}`}</div>{p!==null&&<div className="text-xs text-neutral-400">{p.toFixed(0)}%</div>}</div></div>})}
   {!rows.length&&<p className="text-neutral-400">No assignments match your search.</p>}</div></div>}

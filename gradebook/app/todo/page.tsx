@@ -9,4 +9,4 @@ export default function Todo(){
   <div className="flex-1"><div className={fin?'line-through':''}>{a.title}</div><div className="text-sm text-neutral-400">{courses.find(c=>c.id===a.courseId)!.name} / {a.category}</div></div>
   <div className="text-right text-sm"><div className={isOverdue(a)?'text-red-400':''}>{fmt(a.due)}</div>{fin&&<div className="text-amber-400">Finished, not turned in</div>}</div></label>};
  return <div><h1 className="text-3xl font-bold mb-1">To-do / Overdue</h1><p className="text-neutral-400 mb-5 text-sm">Check an item when it's finished but not turned in yet.</p>
-  <div className="grid gap-6 md:grid-cols-2">{groups.map(([t,l])=><div key={t}><h2 className="font-semibold mb-2">{t} ({l.length})</h2><div className="space-y-2">{l.map(row)}{!l.length&&<p className="text-neutral-500 text-sm">Nothing here.</p>}</div></div>)}</div></div>}
+  <div className="grid gap-6 md:grid-cols-2">{groups.map(([t,l])=><div key={t}><h2 className="font-semibold mb-2">{t} ({l.length})</h2><div className="space-y-2 stagger">{l.map(row)}{!l.length&&<p className="text-neutral-500 text-sm">Nothing here.</p>}</div></div>)}</div></div>}

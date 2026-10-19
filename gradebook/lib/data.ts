@@ -19,9 +19,10 @@ export const assignments:Assignment[]=courses.flatMap(c=>Array.from({length:14},
   assigned:day(due-6),due:day(due),completed:past&&!missing?day(due-1):null,score:past&&!missing?Math.round(max*Math.min(1,base+(rnd()-.5)*.25)*10)/10:null,max}}));
 export const schools=['Fauquier High School','Liberty High School','Kettle Run High School','Brentsville District High School','Osbourn Park High School','Woodgrove High School','Heritage High School'];
 export const isOverdue=(a:Assignment)=>a.score===null&&!a.completed&&+new Date(a.due)<+NOW;
-export const eff=(a:Assignment)=>a.score!==null?a.score:isOverdue(a)?0:null;
-export function grade(c:Course,list:Assignment[],fill=false){let t=0,wsum=0;
- for(const cat of c.cats){let g=0,m=0;for(const a of list)if(a.courseId===c.id&&a.category===cat.name){const e=fill&&isOverdue(a)?a.max:eff(a);if(e!==null){g+=e;m+=a.max}}
+// Ungraded assignments (missing, overdue or pending) don't count toward any grade.
+export const eff=(a:Assignment)=>a.score;
+export function grade(c:Course,list:Assignment[]){let t=0,wsum=0;
+ for(const cat of c.cats){let g=0,m=0;for(const a of list)if(a.courseId===c.id&&a.category===cat.name){const e=eff(a);if(e!==null){g+=e;m+=a.max}}
   if(m){t+=cat.w*g/m;wsum+=cat.w}}return wsum?t/wsum*100:null}
 export const catPct=(c:Course,cat:string)=>{let g=0,m=0;for(const a of assignments)if(a.courseId===c.id&&a.category===cat){const e=eff(a);if(e!==null){g+=e;m+=a.max}}return m?g/m*100:null};
 export const letter=(p:number|null)=>p===null?'–':p>=97?'A+':p>=93?'A':p>=90?'A-':p>=87?'B+':p>=83?'B':p>=80?'B-':p>=77?'C+':p>=73?'C':p>=70?'C-':p>=60?'D':'F';
